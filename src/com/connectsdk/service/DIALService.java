@@ -54,6 +54,7 @@ public class DIALService extends DeviceService implements Launcher {
 
     public static final String ID = "DIAL";
     private static final String APP_NETFLIX = "Netflix";
+    private static final String APP_PLUTOTV = "PlutoTV";
 
     private static List<String> registeredApps = new ArrayList<String>();
 
@@ -61,6 +62,7 @@ public class DIALService extends DeviceService implements Launcher {
         registeredApps.add("YouTube");
         registeredApps.add("Netflix");
         registeredApps.add("Amazon");
+        registeredApps.add("PlutoTV");
     }
 
     public static void registerApp(String appId) {
@@ -245,6 +247,26 @@ public class DIALService extends DeviceService implements Launcher {
         }
 
         AppInfo appInfo = new AppInfo(APP_NETFLIX);
+        appInfo.setName(appInfo.getId());
+
+        launchAppWithInfo(appInfo, params, listener);
+    }
+
+    @Override
+    public void launchPlutoTV(final String contentId, AppLaunchListener listener) {
+        JSONObject params = null;
+
+        if (contentId != null && contentId.length() > 0) {
+            try {
+                params = new JSONObject() {{
+                    put("v", contentId);
+                }};
+            } catch (JSONException e) {
+                Log.e(Util.T, "Launch PlutoTV error", e);
+            }
+        }
+
+        AppInfo appInfo = new AppInfo(APP_PLUTOTV);
         appInfo.setName(appInfo.getId());
 
         launchAppWithInfo(appInfo, params, listener);

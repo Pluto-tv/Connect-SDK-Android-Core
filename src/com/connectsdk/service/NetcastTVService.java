@@ -733,6 +733,73 @@ public class NetcastTVService extends DeviceService implements Launcher, MediaCo
         });
     }
 
+
+    @Override
+    public void launchPlutoTV(final String contentId, final Launcher.AppLaunchListener listener) {
+        if (!serviceDescription.getModelNumber().equals("4.0")) {
+            launchApp("PlutoTV", listener);
+            return;
+        }
+
+        final String appName = "PlutoTV";
+
+        getApplication(appName, new AppInfoListener() {
+
+            @Override
+            public void onSuccess(final AppInfo appInfo) {
+                JSONObject jsonObj = new JSONObject();
+
+                try {
+                    jsonObj.put("id", appInfo.getId());
+                    jsonObj.put("name", appName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                ResponseListener<Object> responseListener = new ResponseListener<Object>() {
+
+                    @Override
+                    public void onSuccess(Object response) {
+                        LaunchSession launchSession = LaunchSession.launchSessionForAppId(appInfo.getId());
+                        launchSession.setAppName(appName);
+                        launchSession.setService(NetcastTVService.this);
+                        launchSession.setSessionType(LaunchSessionType.App);
+
+                        Util.postSuccess(listener, launchSession);
+                    }
+
+                    @Override
+                    public void onError(ServiceCommandError error) {
+                        Util.postError(listener, error);
+                    }
+                };
+
+                String requestURL = getUDAPRequestURL(UDAP_PATH_APPTOAPP_COMMAND);
+
+                Map <String,String> params = new HashMap<String,String>();
+                params.put("name", "SearchCMDPlaySDPContent");
+                params.put("content_type", "1");
+                params.put("conts_exec_type", "20");
+                params.put("conts_plex_type_flag", "N");
+                params.put("conts_search_id", "2023237");
+                params.put("conts_age", "18");
+                params.put("exec_id", "netflix");
+                params.put("item_id", "-Q m=http%3A%2F%2Fapi.netflix.com%2Fcatalog%2Ftitles%2Fmovies%2F" + contentId + "&amp;source_type=4&amp;trackId=6054700&amp;trackUrl=https%3A%2F%2Fapi.netflix.com%2FAPI_APP_ID_6261%3F%23Search%3F");
+                params.put("app_type", "");
+
+                String httpMessage = getUDAPMessageBody(UDAP_API_COMMAND, params);
+
+                ServiceCommand<ResponseListener<Object>> request = new ServiceCommand<ResponseListener<Object>>(NetcastTVService.this, requestURL, httpMessage, responseListener);
+                request.send();
+            }
+
+            @Override
+            public void onError(ServiceCommandError error) {
+                Util.postError(listener, error);
+            }
+        });
+    }
+
     @Override
     public void launchAppStore(final String appId, final AppLaunchListener listener) {
         if (!serviceDescription.getModelNumber().equals("4.0")) {

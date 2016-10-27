@@ -40,6 +40,8 @@ public interface Launcher extends CapabilityMethods {
     public final static String Hulu_Params = "Launcher.Hulu.Params";
     public final static String Netflix = "Launcher.Netflix";
     public final static String Netflix_Params = "Launcher.Netflix.Params";
+    public final static String PlutoTV = "Launcher.PlutoTV";
+    public final static String PlutoTV_Params = "Launcher.PlutoTV.Params";
     public final static String YouTube = "Launcher.YouTube";
     public final static String YouTube_Params = "Launcher.YouTube.Params";
     public final static String AppStore = "Launcher.AppStore";
@@ -60,6 +62,8 @@ public interface Launcher extends CapabilityMethods {
         Hulu_Params,
         Netflix,
         Netflix_Params,
+            PlutoTV,
+            PlutoTV_Params,
         YouTube,
         YouTube_Params,
         AppStore, 
@@ -91,6 +95,7 @@ public interface Launcher extends CapabilityMethods {
     public void launchYouTube(String contentId, AppLaunchListener listener);
     public void launchYouTube(String contentId, float startTime, AppLaunchListener listener);
     public void launchNetflix(String contentId, AppLaunchListener listener);
+    public void launchPlutoTV(String contentId, AppLaunchListener listener);
     public void launchHulu(String contentId, AppLaunchListener listener);
     public void launchAppStore(String appId, AppLaunchListener listener);
 

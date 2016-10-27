@@ -71,6 +71,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class RokuService extends DeviceService implements Launcher, MediaPlayer, MediaControl, KeyControl, TextInputControl {
 
     public static final String ID = "Roku";
+    public static final String ROKU_PLUTO_APP_ID = "74519";
 
     private static List<String> registeredApps = new ArrayList<String>();
 
@@ -80,6 +81,7 @@ public class RokuService extends DeviceService implements Launcher, MediaPlayer,
         registeredApps.add("YouTube");
         registeredApps.add("Netflix");
         registeredApps.add("Amazon");
+        registeredApps.add("Pluto TV");
     }
 
     public static void registerApp(String appId) {
@@ -376,6 +378,40 @@ public class RokuService extends DeviceService implements Launcher, MediaPlayer,
                         break;
                     }
                 }
+            }
+
+            @Override
+            public void onError(ServiceCommandError error) {
+                Util.postError(listener, error);
+            }
+        });
+    }
+
+    @Override
+    public void launchPlutoTV(final String contentId,
+                              final Launcher.AppLaunchListener listener) {
+        getAppList(new AppListListener() {
+
+            @Override
+            public void onSuccess(List<AppInfo> appList) {
+                for (AppInfo appInfo : appList) {
+                    if (appInfo.getName().equalsIgnoreCase("Pluto TV")) {
+                        JSONObject payload = new JSONObject();
+//                        try {
+//                            payload.put("mediaType", "movie");
+//
+//                            if (contentId != null && contentId.length() > 0)
+//                                payload.put("contentId", contentId);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        launchAppWithInfo(appInfo, payload, listener);
+                        return;
+                    }
+                }
+
+                // App is not installed
+                launchAppStore(ROKU_PLUTO_APP_ID, listener);
             }
 
             @Override
@@ -978,6 +1014,8 @@ public class RokuService extends DeviceService implements Launcher, MediaPlayer,
 
         capabilities.add(Application_Params);
         capabilities.add(Application_List);
+        capabilities.add(PlutoTV);
+        capabilities.add(PlutoTV_Params);
         capabilities.add(AppStore);
         capabilities.add(AppStore_Params);
         capabilities.add(Application_Close);

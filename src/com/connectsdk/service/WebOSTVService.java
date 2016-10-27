@@ -631,6 +631,25 @@ public class WebOSTVService extends DeviceService implements Launcher, MediaCont
     }
 
     @Override
+    public void launchPlutoTV(String contentId, Launcher.AppLaunchListener listener) {
+        JSONObject params = new JSONObject();
+//        String netflixContentId = "m=http%3A%2F%2Fapi.netflix.com%2Fcatalog%2Ftitles%2Fmovies%2F" + contentId + "&source_type=4";
+//
+//        try {
+//            params.put("contentId", netflixContentId);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+
+        AppInfo appInfo = new AppInfo() {{
+            setId("plutotv");
+            setName("PlutoTV");
+        }};
+
+        launchAppWithInfo(appInfo, params, listener);
+    }
+
+    @Override
     public void launchAppStore(String appId, AppLaunchListener listener) {
         AppInfo appInfo = new AppInfo("com.webos.app.discovery");
         appInfo.setName("LG Store");
