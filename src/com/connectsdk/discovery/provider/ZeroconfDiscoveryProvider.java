@@ -248,7 +248,7 @@ public class ZeroconfDiscoveryProvider implements DiscoveryProvider {
                     jmdns.addServiceListener(filter, jmdnsListener);
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             e.printStackTrace();
         }
     }

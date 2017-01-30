@@ -194,27 +194,31 @@ public class SSDPDiscoveryProvider implements DiscoveryProvider {
 
     @Override
     public void rescan() {
-        for (DiscoveryFilter searchTarget : serviceFilters) {
-            final String message = SSDPClient.getSSDPSearchMessage(searchTarget.getServiceFilter());
+        try {
+            for (DiscoveryFilter searchTarget : serviceFilters) {
+                final String message = SSDPClient.getSSDPSearchMessage(searchTarget.getServiceFilter());
 
-            Timer timer = new Timer();
+                Timer timer = new Timer();
             /* Send 3 times like WindowsMedia */
-            for (int i = 0; i < 3; i++) {
-                TimerTask task = new TimerTask() {
+                for (int i = 0; i < 3; i++) {
+                    TimerTask task = new TimerTask() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            if (ssdpClient != null)
-                                ssdpClient.send(message);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        @Override
+                        public void run() {
+                            try {
+                                if (ssdpClient != null)
+                                    ssdpClient.send(message);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                };
+                    };
 
-                timer.schedule(task, i * 1000);
+                    timer.schedule(task, i * 1000);
+                }
             }
+        } catch (Exception | OutOfMemoryError e) {
+            e.printStackTrace();
         }
 
     }
